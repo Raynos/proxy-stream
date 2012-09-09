@@ -1,0 +1,31 @@
+{
+  "name": "proxy-stream",
+  "version": "0.0.1",
+  "description": "Create a wrapped stream",
+  "keywords": [],
+  "author": "Raynos <raynos2@gmail.com>",
+  "repository": "git://github.com/Raynos/proxy-stream.git",
+  "main": "index",
+  "homepage": "https://github.com/Raynos/proxy-stream",
+  "contributors": [
+    {
+      "name": "Jake Verbaten"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/Raynos/proxy-stream/issues",
+    "email": "raynos2@gmail.com"
+  },
+  "dependencies": {
+    "through-stream": "0.0.1",
+    "re-emitter": "~0.2.0"
+  },
+  "devDependencies": {},
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/Raynos/proxy-stream/raw/master/LICENSE"
+    }
+  ],
+  "scripts": {}
+}
