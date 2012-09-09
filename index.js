@@ -7,7 +7,7 @@ function proxy(stream, write, read, end, pipe) {
     var proxied = through(write, read, end)
 
     if (pipe) {
-        proxied.pipe = pipe
+        proxied.pipe = handlePipe
     }
 
     proxied.writable = stream.writable
@@ -16,4 +16,11 @@ function proxy(stream, write, read, end, pipe) {
     reemit(stream, proxied, ["readable", "drain", "end"])
 
     return proxied
+
+    function handlePipe(dest) {
+        var intern = through.apply(null, pipe)
+        intern.pipe(dest)
+        stream.pipe(intern)
+        return dest
+    }
 }

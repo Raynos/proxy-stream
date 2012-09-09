@@ -13,7 +13,7 @@ input.write(2)
 input.write(3)
 
 function map(stream, iterator) {
-    return proxy(stream, write, read, stream.end, pipe)
+    return proxy(stream, write, read, stream.end, [pipeWrite])
 
     function write(chunk) {
         return stream.write(iterator(chunk))
@@ -24,12 +24,7 @@ function map(stream, iterator) {
         return chunk === null ? null : iterator(chunk)
     }
 
-    function pipe(dest) {
-        var mapped = through(function write(chunk, buffer) {
-            buffer.push(iterator(chunk))
-        })
-        mapped.pipe(dest)
-        stream.pipe(mapped)
-        return dest
+    function pipeWrite(chunk, buffer) {
+        buffer.push(iterator(chunk))
     }
 }
