@@ -5,6 +5,7 @@ module.exports = proxy
 
 function proxy(stream, write, read, end, pipe) {
     var proxied = through(write, read, end)
+        , pipeStream
 
     if (pipe) {
         proxied.pipe = handlePipe
@@ -18,9 +19,11 @@ function proxy(stream, write, read, end, pipe) {
     return proxied
 
     function handlePipe(dest) {
-        var intern = through.apply(null, pipe)
-        intern.pipe(dest)
-        stream.pipe(intern)
+        if (pipeStream) {
+            pipeStream = through.apply(null, pipe)
+            stream.pipe(pipeStream)
+        }
+        pipeStream.pipe(dest)
         return dest
     }
 }
