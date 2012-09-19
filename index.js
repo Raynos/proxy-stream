@@ -19,7 +19,7 @@ function proxy(stream, write, read, end, pipe) {
     return proxied
 
     function handlePipe(dest) {
-        if (pipeStream) {
+        if (!pipeStream) {
             pipeStream = through.apply(null, pipe)
             stream.pipe(pipeStream)
         }
