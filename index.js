@@ -36,6 +36,9 @@ function proxy(stream, transformation) {
         }
 
         transformation(chunk, queue.push)
+        if (queue.length === 0) {
+            return read(bytes, queue)
+        }
         return queue.shift()
     }
 
