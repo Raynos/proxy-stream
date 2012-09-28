@@ -3,13 +3,18 @@ var ReadWriteStream = require("read-write-stream")
 
 module.exports = proxy
 
-function proxy(stream, transformation, end) {
-    var proxied = ReadWriteStream(write, end || defaultEnd, read).stream
+function proxy(stream, transformation, readEnd, writeEnd) {
+    writeEnd = writeEnd || defaultWriteEnd
+    readEnd = readEnd || defaultReadEnd
+
+    var proxied = ReadWriteStream(write, writeEnd, read).stream
         , pipeStream
 
     proxied.pipe = handlePipe
 
-    reemit(stream, proxied, ["readable", "drain", "end"])
+    reemit(stream, proxied, ["readable", "drain"])
+
+    stream.on("end", readEnd)
 
     return proxied
 
@@ -25,8 +30,12 @@ function proxy(stream, transformation, end) {
         transformation(chunk, stream.write)
     }
 
-    function defaultEnd() {
+    function defaultWriteEnd() {
         stream.end()
+    }
+
+    function defaultReadEnd() {
+        stream.emit("end")
     }
 
     function read(bytes, queue) {
