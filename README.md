@@ -4,7 +4,7 @@ Create a wrapped stream
 
 ## Example
 
-```
+``` js
 var proxy = require("proxy-stream")
     , WriteStream = require("write-stream")
 
