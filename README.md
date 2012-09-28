@@ -14,6 +14,15 @@ function map(stream, iterator) {
     })
 }
 
+function mapConcat(stream, iterator) {
+    return proxy(stream, function transformation(chunk, next) {
+        var list = iterator(chunk)
+        list.forEach(function (item) {
+            next(item)
+        })
+    })
+}
+
 function filter(stream, predicate) {
     return proxy(stream, function transformation(chunk, next) {
         var keep = predicate(chunk)
