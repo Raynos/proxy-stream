@@ -7,7 +7,7 @@ Create a wrapped stream
 ```
 var proxy = require("proxy-stream")
 
-function map(stream, iterator) {
+function map(stream, iterator) {g9
     return proxy(stream, function transformation(chunk, next) {
         next(iterator(chunk))
     })
