@@ -18,9 +18,13 @@
   },
   "dependencies": {
     "through-stream": "~0.0.2",
-    "re-emitter": "~0.2.0"
+    "re-emitter": "~0.2.0",
+    "read-write-stream": "~0.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "read-stream": "~0.4.0",
+    "write-stream": "~0.4.0"
+  },
   "licenses": [
     {
       "type": "MIT",

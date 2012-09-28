@@ -1,30 +1,41 @@
 var proxy = require("..")
-    , through = require("through-stream")
-    , input = through()
-    , output = through(function (chunk) {
-        console.log("chunk", chunk)
+    , from = require("read-stream").fromArray
+    , to = require("write-stream").toArray
+
+var source = map(from([1,2,3]), function (chunk) {
+    return chunk * 2
+})
+
+console.log("one", source.read())
+console.log("two", source.read())
+console.log("three", source.read())
+console.log("four", source.read())
+
+from([1,2,3]).pipe(map(to([], function (list) {
+    console.log("writable list", list)
+}), function (chunk) {
+    return chunk * 3
+}))
+
+var mapped = map(from([1,2,3]), function (chunk) {
+        return chunk * 2
+    })
+    , doubleMapped = map(mapped, function (chunk) {
+        return chunk * 3
     })
 
-map(input, function (chunk) {
-    return chunk * 2
-}).pipe(output)
+mapped.pipe(to([], function (list) {
+    console.log("mapped", list)
+}))
 
-input.write(2)
-input.write(3)
+doubleMapped.pipe(to([], function (list) {
+    console.log("double mapped", list)
+}))
 
 function map(stream, iterator) {
-    return proxy(stream, write, read, stream.end, [pipeWrite])
+    return proxy(stream, transformation)
 
-    function write(chunk) {
-        return stream.write(iterator(chunk))
-    }
-
-    function read(bytes) {
-        var chunk = stream.read(bytes)
-        return chunk === null ? null : iterator(chunk)
-    }
-
-    function pipeWrite(chunk, buffer) {
-        buffer.push(iterator(chunk))
+    function transformation(chunk, next) {
+        next(iterator(chunk))
     }
 }

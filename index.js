@@ -1,18 +1,13 @@
-var through = require("through-stream")
+var ReadWriteStream = require("read-write-stream")
     , reemit = require("re-emitter").reemit
 
 module.exports = proxy
 
-function proxy(stream, write, read, end, pipe) {
-    var proxied = through(write, read, end)
+function proxy(stream, transformation) {
+    var proxied = ReadWriteStream(write, end, read).stream
         , pipeStream
 
-    if (pipe) {
-        proxied.pipe = handlePipe
-    }
-
-    proxied.writable = stream.writable
-    proxied.readable = stream.readable
+    proxied.pipe = handlePipe
 
     reemit(stream, proxied, ["readable", "drain", "end"])
 
@@ -20,10 +15,31 @@ function proxy(stream, write, read, end, pipe) {
 
     function handlePipe(dest) {
         if (!pipeStream) {
-            pipeStream = through.apply(null, pipe)
+            pipeStream = ReadWriteStream(writePipe).stream
             stream.pipe(pipeStream)
         }
-        pipeStream.pipe(dest)
-        return dest
+        return pipeStream.pipe(dest)
+    }
+
+    function write(chunk, queue) {
+        transformation(chunk, stream.write)
+    }
+
+    function end() {
+        stream.end()
+    }
+
+    function read(bytes, queue) {
+        var chunk = stream.read()
+        if (chunk === null) {
+            return null
+        }
+
+        transformation(chunk, queue.push)
+        return queue.shift()
+    }
+
+    function writePipe(chunk, queue) {
+        transformation(chunk, queue.push)
     }
 }
