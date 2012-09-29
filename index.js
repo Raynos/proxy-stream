@@ -13,7 +13,7 @@ function proxy(stream, transformation) {
 
     proxied.pipe = handlePipe
 
-    reemit(stream, proxied, ["readable", "drain"])
+    reemit(stream, proxied, ["readable", "drain", "error"])
 
     stream.on("end", readEnd)
 
