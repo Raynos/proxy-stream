@@ -1,6 +1,6 @@
 {
   "name": "proxy-stream",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Create a wrapped stream",
   "keywords": [],
   "author": "Raynos <raynos2@gmail.com>",
