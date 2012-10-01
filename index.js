@@ -22,9 +22,10 @@ function proxy(stream, transformation) {
     function write(chunk, queue) {
         if (transformation.length === 3) {
             writeEndCount++
-            return transformation(chunk, stream.write, decrementWriteCount)
+            return transformation.call(proxied, chunk, stream.write
+                , decrementWriteCount)
         } else {
-            return transformation(chunk, stream.write)
+            return transformation.call(proxied, chunk, stream.write)
         }
     }
 
@@ -36,9 +37,9 @@ function proxy(stream, transformation) {
 
         if (transformation.length === 3) {
             readEndCount++
-            transformation(chunk, queue.push, decrementReadCount)
+            transformation.call(proxied, chunk, queue.push, decrementReadCount)
         } else {
-            transformation(chunk, queue.push)
+            transformation.call(proxied, chunk, queue.push)
         }
 
         if (queue.length === 0) {
@@ -89,9 +90,10 @@ function proxy(stream, transformation) {
         function pipeWrite(chunk, queue) {
             if (transformation.length === 3) {
                 endCount++
-                return transformation(chunk, queue.push, decrementCount)
+                return transformation.call(proxied, chunk, queue.push
+                    , decrementCount)
             } else {
-                return transformation(chunk, queue.push)
+                return transformation.call(proxied, chunk, queue.push)
             }
         }
 
